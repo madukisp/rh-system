@@ -29,4 +29,6 @@ Agenda / linha do tempo pessoal. Amanda lembra de coisas que já fez → eu anot
 5. Anotar projetos/tarefas automaticamente quando ela mencionar trabalho já realizado
 
 ## Estado atual do banco
-11 projetos cadastrados (ver `listProjetos()` ou query direta no SQLite em `data/rh-system.sqlite`)
+- **Engine atual: SQLite** (migrou-se fora do Supabase)
+- Path do banco: `data/rh-system.sqlite` (relativo à raiz do projeto)
+- 11 projetos cadastrados (ver `listProjetos()` ou query direta no SQLite)
