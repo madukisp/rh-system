@@ -13,23 +13,17 @@ import {
   Clock,
   Tag,
   Columns3,
+  BookOpen,
   Github,
   Loader2,
+  Kanban,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { StatusBadge } from "@/components/status-badge";
-import type { Projeto } from "@/lib/supabase";
+import { SETOR_ICON_BY_VALUE } from "@/lib/setores";
+import type { Projeto } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-const SECTOR_ICONS: Record<string, string> = {
-  "Saúde Pública": "🏥",
-  Saúde: "⚕️",
-  Corporativo: "🏢",
-  Educação: "🎓",
-  Financeiro: "💰",
-  Tecnologia: "💻",
-};
 
 interface ProjectCardProps {
   projeto: Projeto;
@@ -48,10 +42,11 @@ export function ProjectCard({
   const [syncing, setSyncing] = useState(false);
   const [hoverAcessar, setHoverAcessar] = useState(false);
   const [hoverKanban, setHoverKanban] = useState(false);
+  const [hoverDocumentacao, setHoverDocumentacao] = useState(false);
   const [hoverEditar, setHoverEditar] = useState(false);
   const router = useRouter();
 
-  const icon = SECTOR_ICONS[projeto.setor ?? ""] ?? "📁";
+  const icon = SETOR_ICON_BY_VALUE[projeto.setor ?? ""] ?? "📁";
   const timeAgo = formatDistanceToNow(new Date(projeto.data_atualizacao), {
     addSuffix: true,
     locale: ptBR,
@@ -75,7 +70,7 @@ export function ProjectCard({
         return;
       }
 
-      const result = await res.json();
+      await res.json();
       alert("Sincronizado com sucesso!");
 
       // Atualizar a página para refletir a nova data
@@ -105,7 +100,7 @@ export function ProjectCard({
             ? "bg-green-500"
             : projeto.status === "construcao"
               ? "bg-yellow-400"
-              : "bg-gray-300 dark:bg-gray-600"
+              : "bg-red-300 dark:bg-red-900/60"
         )}
       />
 
@@ -160,6 +155,15 @@ export function ProjectCard({
                     className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                   >
                     <Kanban className="w-4 h-4" /> Ver Kanban
+                  </button>
+                  <button
+                    onClick={() => {
+                      router.push(`/projetos/${projeto.id}/documentacao`);
+                      setMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <BookOpen className="w-4 h-4" /> Documentação
                   </button>
                   <button
                     onClick={() => {
@@ -276,6 +280,17 @@ export function ProjectCard({
           <span className={cn("relative w-full flex items-center justify-center gap-2 px-4 py-2.5 transition-all ease-in duration-75 rounded-md", hoverKanban ? "bg-transparent" : "bg-white dark:bg-gray-800")}>
             <Columns3 className="w-4 h-4" />
             Kanban
+          </span>
+        </button>
+        <button
+          onClick={() => router.push(`/projetos/${projeto.id}/documentacao`)}
+          onMouseEnter={() => setHoverDocumentacao(true)}
+          onMouseLeave={() => setHoverDocumentacao(false)}
+          className="relative inline-flex w-full items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800"
+        >
+          <span className={cn("relative w-full flex items-center justify-center gap-2 px-4 py-2.5 transition-all ease-in duration-75 rounded-md", hoverDocumentacao ? "bg-transparent" : "bg-white dark:bg-gray-800")}>
+            <BookOpen className="w-4 h-4" />
+            Documentação
           </span>
         </button>
         <button

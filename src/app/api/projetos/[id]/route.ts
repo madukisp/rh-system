@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { deleteProjeto, getProjetoById, updateProjeto } from "@/lib/db";
 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { data, error } = await supabase
-    .from("projetos")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 404 });
+  const data = getProjetoById(id);
+  if (!data) {
+    return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
+  }
   return NextResponse.json(data);
 }
 
@@ -22,15 +19,10 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await req.json();
-
-  const { data, error } = await supabase
-    .from("projetos")
-    .update({ ...body, data_atualizacao: new Date().toISOString() })
-    .eq("id", id)
-    .select()
-    .single();
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const data = updateProjeto(id, body);
+  if (!data) {
+    return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
+  }
   return NextResponse.json(data);
 }
 
@@ -39,8 +31,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-
-  const { error } = await supabase.from("projetos").delete().eq("id", id);
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const deleted = deleteProjeto(id);
+  if (!deleted) {
+    return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
+  }
   return NextResponse.json({ success: true });
 }

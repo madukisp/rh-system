@@ -22,7 +22,7 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { StatusBadge } from "@/components/status-badge";
 import { CreateProjectModal } from "@/components/create-project-modal";
 import { EditProjectModal } from "@/components/edit-project-modal";
-import type { Projeto } from "@/lib/supabase";
+import type { Projeto } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZES = [10, 20, 50];
@@ -91,7 +91,11 @@ export default function ProjetosPage() {
   const toggleSelect = (id: string) =>
     setSelected((s) => {
       const n = new Set(s);
-      n.has(id) ? n.delete(id) : n.add(id);
+      if (n.has(id)) {
+        n.delete(id);
+      } else {
+        n.add(id);
+      }
       return n;
     });
 

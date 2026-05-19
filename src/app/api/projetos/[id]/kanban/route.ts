@@ -1,23 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { createKanbanCard, getProjetoById, listKanbanCards } from "@/lib/db";
 
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const { data, error } = await supabase
-    .from("kanban_cards")
-    .select("*")
-    .eq("projeto_id", id)
-    .order("posicao", { ascending: true });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  const data = listKanbanCards(id);
   return NextResponse.json(data);
 }
 
@@ -27,23 +16,21 @@ export async function POST(
 ) {
   const { id } = await params;
   const body = await req.json();
-  const now = new Date().toISOString();
+  const projeto = getProjetoById(id);
 
-  const { data, error } = await supabase
-    .from("kanban_cards")
-    .insert({ ...body, projeto_id: id, data_criacao: now, data_atualizacao: now })
-    .select()
-    .single();
+  if (!projeto) {
+    return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (typeof body.titulo !== "string" || body.titulo.trim().length === 0) {
+    return NextResponse.json({ error: "Título é obrigatório" }, { status: 400 });
+  }
 
-  // Register initial status in history
-  await supabase.from("kanban_historico").insert({
-    card_id: data.id,
-    coluna_anterior: null,
-    coluna_nova: data.coluna,
-    data_mudanca: now,
-  });
+  if (typeof body.coluna !== "string" || body.coluna.trim().length === 0) {
+    return NextResponse.json({ error: "Coluna é obrigatória" }, { status: 400 });
+  }
+
+  const data = createKanbanCard(id, body);
 
   return NextResponse.json(data, { status: 201 });
 }

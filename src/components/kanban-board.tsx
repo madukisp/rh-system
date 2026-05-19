@@ -18,6 +18,7 @@ import {
   History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { HistoricoEntry, KanbanCard } from "@/lib/types";
 import {
   Dialog,
   DialogContent,
@@ -26,28 +27,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-export type HistoricoEntry = {
-  id: string;
-  card_id: string;
-  coluna_anterior: string | null;
-  coluna_nova: string;
-  data_mudanca: string;
-};
-
-export type KanbanCard = {
-  id: string;
-  projeto_id: string;
-  coluna: string;
-  titulo: string;
-  descricao: string | null;
-  cor: string;
-  prioridade: string;
-  categoria: string;
-  posicao: number;
-  data_criacao: string;
-  data_atualizacao: string;
-  historico?: HistoricoEntry[];
-};
+export type { HistoricoEntry, KanbanCard } from "@/lib/types";
 
 export type KanbanColumn = {
   id: string;
@@ -469,17 +449,6 @@ function KanbanCardItem({
     }
   };
 
-  const handleDragLeaveCard = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Only reset if we're actually leaving the card element
-    if ((e.relatedTarget as HTMLElement)?.closest('[draggable="true"]') === null) {
-      if (onDragOverCard) {
-        onDragOverCard('');
-      }
-    }
-  };
-
   const handleDropOnCard = (e: React.DragEvent, targetCardId: string) => {
     e.preventDefault();
     // Só bloqueia propagação se o drag é dentro da mesma coluna (reordenação)
@@ -577,8 +546,8 @@ interface ColumnProps {
   column: KanbanColumn;
   cards: KanbanCard[];
   dragCard: KanbanCard | null;
-  onAddCard: (coluna: string, data: { titulo: string; descricao: string; cor: string; prioridade: string; categoria: string }) => void;
-  onEditCard: (card: KanbanCard, data: { titulo: string; descricao: string; cor: string; prioridade: string; categoria: string }) => void;
+  onAddCard: (coluna: string, data: { titulo: string; descricao: string; cor: string; prioridade: string; categoria: string }) => Promise<void>;
+  onEditCard: (card: KanbanCard, data: { titulo: string; descricao: string; cor: string; prioridade: string; categoria: string }) => Promise<void>;
   onDeleteCard: (id: string) => void;
   onDragStart: (card: KanbanCard) => void;
   onDragEnd: () => void;

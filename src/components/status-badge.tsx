@@ -13,8 +13,8 @@ export function StatusBadge({ status }: { status: string }) {
       label: "Em Construção",
     },
     inativo: {
-      bg: "bg-gray-100 dark:bg-gray-700",
-      text: "text-gray-700 dark:text-gray-300",
+      bg: "bg-red-50 dark:bg-red-950/30",
+      text: "text-red-700 dark:text-red-300",
       label: "Inativo",
     },
   };

@@ -1,24 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X, Loader2 } from "lucide-react";
-import type { Projeto } from "@/lib/supabase";
+import { SETOR_VALUES } from "@/lib/setores";
+import type { Projeto } from "@/lib/types";
 
 interface EditProjectModalProps {
   projeto: Projeto;
   onClose: () => void;
   onSaved: (projeto: Projeto) => void;
 }
-
-const SETORES = [
-  "Saúde Pública",
-  "Saúde",
-  "Corporativo",
-  "Educação",
-  "Financeiro",
-  "Tecnologia",
-  "Administrativo",
-];
 
 export function EditProjectModal({
   projeto,
@@ -103,9 +94,9 @@ export function EditProjectModal({
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               >
                 <option value="">Selecionar...</option>
-                {SETORES.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
+                {SETOR_VALUES.map((setor) => (
+                  <option key={setor} value={setor}>
+                    {setor}
                   </option>
                 ))}
               </select>

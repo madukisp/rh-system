@@ -8,6 +8,7 @@ import {
   Settings,
   BookOpen,
   HelpCircle,
+  History,
   ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ interface SidebarProps {
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/projetos", label: "Meus Projetos", icon: FolderKanban },
+  { href: "/timeline", label: "Linha do Tempo", icon: History },
   { href: "/configuracoes", label: "Configurações", icon: Settings },
   { href: "/documentacao", label: "Documentação", icon: BookOpen },
   { href: "/suporte", label: "Suporte", icon: HelpCircle },

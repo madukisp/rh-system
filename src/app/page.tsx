@@ -8,7 +8,6 @@ import {
   XCircle,
   Plus,
   Search,
-  SlidersHorizontal,
   RefreshCw,
   LayoutGrid,
   List,
@@ -17,19 +16,9 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { ProjectCard } from "@/components/project-card";
 import { CreateProjectModal } from "@/components/create-project-modal";
 import { EditProjectModal } from "@/components/edit-project-modal";
-import type { Projeto } from "@/lib/supabase";
+import { SETOR_FILTER_OPTIONS } from "@/lib/setores";
+import type { Projeto } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-const SETORES = [
-  "todos",
-  "Saúde Pública",
-  "Saúde",
-  "Corporativo",
-  "Educação",
-  "Financeiro",
-  "Tecnologia",
-  "Administrativo",
-];
 
 const STATUS_OPTIONS = [
   { value: "todos", label: "Todos" },
@@ -159,6 +148,16 @@ export default function DashboardPage() {
     inativos: projetos.filter((p) => p.status === "inativo").length,
   };
 
+  const statusOrder: Record<string, number> = {
+    ativo: 0,
+    construcao: 1,
+    inativo: 2,
+  };
+
+  const orderedProjetos = [...projetos].sort(
+    (a, b) => (statusOrder[a.status] ?? 99) - (statusOrder[b.status] ?? 99)
+  );
+
   return (
     <AppLayout>
       {/* Greeting */}
@@ -231,9 +230,9 @@ export default function DashboardPage() {
           onChange={(e) => setSetorFilter(e.target.value)}
           className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
         >
-          {SETORES.map((s) => (
-            <option key={s} value={s}>
-              {s === "todos" ? "Todos os Setores" : s}
+          {SETOR_FILTER_OPTIONS.map((setor) => (
+            <option key={setor.value} value={setor.value}>
+              {setor.label}
             </option>
           ))}
         </select>
@@ -329,7 +328,7 @@ export default function DashboardPage() {
               : "flex flex-col gap-3"
           )}
         >
-          {projetos.map((projeto) => (
+          {orderedProjetos.map((projeto) => (
             <ProjectCard
               key={projeto.id}
               projeto={projeto}

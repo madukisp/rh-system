@@ -1,5 +1,5 @@
 import { AppLayout } from "@/components/layout/app-layout";
-import { HelpCircle, Mail, MessageSquare, Phone } from "lucide-react";
+import { HelpCircle, Mail } from "lucide-react";
 
 export default function SuportePage() {
   return (
@@ -17,7 +17,7 @@ export default function SuportePage() {
           { icon: Mail, title: "Email", desc: "dados.rh@sbcdsaude.org.br"},
 //          { icon: Phone, title: "Telefone", desc: "(11) 3000-0000", sub: "Seg-Sex, 8h–18h" },
 //          { icon: MessageSquare, title: "Chat Online", desc: "Chat ao vivo", sub: "Disponível agora" },
-        ].map(({ icon: Icon, title, desc, sub }) => (
+        ].map(({ icon: Icon, title, desc }) => (
           <div
             key={title}
             className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm flex flex-col items-center text-center hover:shadow-md transition-shadow"
@@ -27,7 +27,6 @@ export default function SuportePage() {
             </div>
             <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{title}</h3>
             <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">{desc}</p>
-            <p className="text-gray-400 dark:text-gray-500 text-xs mt-1">{sub}</p>
           </div>
         ))}
       </div>

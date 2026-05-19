@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { getProjetoById, updateProjeto } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 interface GitHubCommit {
@@ -11,10 +11,6 @@ interface GitHubCommit {
 
 function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
   try {
-    // Extrai owner e repo de URLs como:
-    // https://github.com/owner/repo
-    // https://github.com/owner/repo.git
-    // github.com/owner/repo
     const match = url.match(/github\.com[:/]([^/]+)\/([^/]+?)(?:\.git)?$/i);
     if (match) {
       return { owner: match[1], repo: match[2] };
@@ -64,27 +60,20 @@ async function fetchLatestCommitFromGitHub(
 }
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
+    const projeto = getProjetoById(id);
 
-    // Busca o projeto
-    const { data: projeto, error: fetchError } = await supabase
-      .from("projetos")
-      .select("*")
-      .eq("id", id)
-      .single();
-
-    if (fetchError || !projeto) {
+    if (!projeto) {
       return NextResponse.json(
         { error: "Projeto não encontrado" },
         { status: 404 }
       );
     }
 
-    // Valida se tem URL base
     if (!projeto.url_base) {
       return NextResponse.json(
         { error: "Projeto não possui URL base configurada" },
@@ -92,7 +81,6 @@ export async function POST(
       );
     }
 
-    // Extrai owner e repo da URL
     const parsed = parseGitHubUrl(projeto.url_base);
     if (!parsed) {
       return NextResponse.json(
@@ -101,7 +89,6 @@ export async function POST(
       );
     }
 
-    // Busca o último commit
     const commitDate = await fetchLatestCommitFromGitHub(
       parsed.owner,
       parsed.repo
@@ -114,18 +101,9 @@ export async function POST(
       );
     }
 
-    // Atualiza o projeto com a data do último commit
-    const { data: updated, error: updateError } = await supabase
-      .from("projetos")
-      .update({
-        data_atualizacao: commitDate,
-      })
-      .eq("id", id)
-      .select()
-      .single();
+    const updated = updateProjeto(id, { data_atualizacao: commitDate });
 
-    if (updateError) {
-      console.error("Erro ao atualizar projeto:", updateError);
+    if (!updated) {
       return NextResponse.json(
         { error: "Erro ao atualizar projeto" },
         { status: 500 }

@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { AppLayout } from "@/components/layout/app-layout";
 import { KanbanBoard, type KanbanCard } from "@/components/kanban-board";
-import type { Projeto } from "@/lib/supabase";
+import type { Projeto } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 function SkeletonKanban() {
