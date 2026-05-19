@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     const orderBy = searchParams.get("orderBy") || "data_atualizacao";
     const order = searchParams.get("order") || "desc";
 
-    const data = listProjetos({ status, setor, search, orderBy, order });
+    const data = await listProjetos({ status, setor, search, orderBy, order });
     return NextResponse.json(data);
   } catch (err) {
     console.error("API error:", err);
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data = createProjeto({
+    const data = await createProjeto({
       nome: body.nome,
       setor: body.setor,
       descricao: body.descricao,

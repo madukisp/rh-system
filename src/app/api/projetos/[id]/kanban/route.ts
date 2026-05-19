@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const data = listKanbanCards(id);
+  const data = await listKanbanCards(id);
   return NextResponse.json(data);
 }
 
@@ -16,7 +16,7 @@ export async function POST(
 ) {
   const { id } = await params;
   const body = await req.json();
-  const projeto = getProjetoById(id);
+  const projeto = await getProjetoById(id);
 
   if (!projeto) {
     return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
@@ -30,7 +30,7 @@ export async function POST(
     return NextResponse.json({ error: "Coluna é obrigatória" }, { status: 400 });
   }
 
-  const data = createKanbanCard(id, body);
+  const data = await createKanbanCard(id, body);
 
   return NextResponse.json(data, { status: 201 });
 }

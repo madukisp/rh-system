@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const data = getProjetoById(id);
+  const data = await getProjetoById(id);
   if (!data) {
     return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
   }
@@ -19,7 +19,7 @@ export async function PATCH(
 ) {
   const { id } = await params;
   const body = await req.json();
-  const data = updateProjeto(id, body);
+  const data = await updateProjeto(id, body);
   if (!data) {
     return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
   }
@@ -31,7 +31,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const deleted = deleteProjeto(id);
+  const deleted = await deleteProjeto(id);
   if (!deleted) {
     return NextResponse.json({ error: "Projeto não encontrado" }, { status: 404 });
   }

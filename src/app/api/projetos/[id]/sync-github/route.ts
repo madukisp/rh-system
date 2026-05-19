@@ -65,7 +65,7 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
-    const projeto = getProjetoById(id);
+    const projeto = await getProjetoById(id);
 
     if (!projeto) {
       return NextResponse.json(
@@ -101,7 +101,7 @@ export async function POST(
       );
     }
 
-    const updated = updateProjeto(id, { data_atualizacao: commitDate });
+    const updated = await updateProjeto(id, { data_atualizacao: commitDate });
 
     if (!updated) {
       return NextResponse.json(

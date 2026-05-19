@@ -81,8 +81,8 @@ function eventStyle(kind: TimelineEvent["kind"]) {
   }
 }
 
-export default function TimelinePage() {
-  const { projetos, cards, historico } = getTimelineSnapshot();
+export default async function TimelinePage() {
+  const { projetos, cards, historico } = await getTimelineSnapshot();
   const today = new Date();
   const oneYearAgo = new Date(today);
   oneYearAgo.setFullYear(today.getFullYear() - 1);

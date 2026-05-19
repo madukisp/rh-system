@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string; cardId: string }> }
 ) {
   const { id, cardId } = await params;
-  const data = getKanbanCardById(id, cardId);
+  const data = await getKanbanCardById(id, cardId);
   if (!data) {
     return NextResponse.json({ error: "Card não encontrado" }, { status: 404 });
   }
@@ -23,7 +23,7 @@ export async function PATCH(
 ) {
   const { id, cardId } = await params;
   const body = await req.json();
-  const data = updateKanbanCard(id, cardId, body);
+  const data = await updateKanbanCard(id, cardId, body);
   if (!data) {
     return NextResponse.json({ error: "Card não encontrado" }, { status: 404 });
   }
@@ -35,7 +35,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; cardId: string }> }
 ) {
   const { id, cardId } = await params;
-  const deleted = deleteKanbanCard(id, cardId);
+  const deleted = await deleteKanbanCard(id, cardId);
   if (!deleted) {
     return NextResponse.json({ error: "Card não encontrado" }, { status: 404 });
   }
